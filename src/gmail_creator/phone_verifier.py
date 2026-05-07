@@ -73,7 +73,7 @@ class FiveSimClient:
                 if status == "RECEIVED":
                     sms = data.get("sms", [])
                     if sms:
-                        code = sms[0].get("code", "")
+                        code: str | None = sms[0].get("code", "")
                         return code
                 time.sleep(5)
             except Exception:

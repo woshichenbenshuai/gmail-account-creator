@@ -11,8 +11,10 @@ def load_accounts() -> list[dict[str, Any]]:
     if not ACCOUNTS_FILE.exists():
         return []
     try:
-        return json.loads(ACCOUNTS_FILE.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
+        data = json.loads(ACCOUNTS_FILE.read_text(encoding="utf-8"))
+        assert isinstance(data, list)
+        return data
+    except (json.JSONDecodeError, OSError, AssertionError):
         return []
 
 

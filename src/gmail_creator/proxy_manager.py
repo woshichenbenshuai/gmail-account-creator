@@ -3,7 +3,7 @@ from __future__ import annotations
 from src.gmail_creator.config import CONFIG
 
 
-def get_proxy_options() -> dict | None:
+def get_proxy_options() -> dict[str, str | dict[str, str]] | None:
     if not CONFIG.PROXY_ENABLED:
         return None
     try:

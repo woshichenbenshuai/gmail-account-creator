@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+from typing import Any
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -106,7 +107,7 @@ def fill_password(driver: WebDriver) -> bool:
         return False
 
 
-def create_single_account() -> dict | None:
+def create_single_account() -> dict[str, Any] | None:
     driver = None
     try:
         print_info("Initializing browser...")

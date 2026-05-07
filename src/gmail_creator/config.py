@@ -15,7 +15,9 @@ def load_text_file(path: Path) -> str:
 def load_json(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
         return []
-    return json.loads(path.read_text(encoding="utf-8"))
+    data = json.loads(path.read_text(encoding="utf-8"))
+    assert isinstance(data, list)
+    return data
 
 
 def load_names(path: Path) -> list[str]:
