@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gmail-creator-pro"
+version = "2.1.0"
+description = "Automated Gmail account creation tool with anti-detection and phone verification bypass"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["gmail", "automation", "selenium", "account-creator"]
+
+authors = [
+    { name = "sandikodev" },
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "selenium>=4.15.0",
+    "webdriver-manager>=4.0.0",
+    "rich>=13.7.0",
+    "requests>=2.31.0",
+    "unidecode>=1.3.7",
+    "beautifulsoup4>=4.12.0",
+]
+
+[project.optional-dependencies]
+proxy = ["fp>=0.1.0"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+]
+build = [
+    "pyinstaller>=6.0",
+]
+
+[project.scripts]
+gmail-creator = "src.gmail_creator.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["gmail_creator*"]
+
+[tool.setuptools.package-data]
+gmail_creator = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
