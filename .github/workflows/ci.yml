@@ -16,7 +16,7 @@ jobs:
           python-version: "3.12"
       - run: pip install ruff mypy
       - run: ruff check src/
-      - run: mypy src/ --ignore-missing-imports
+      - run: mypy src/ --ignore-missing-imports --explicit-package-bases
 
   test:
     runs-on: ubuntu-latest

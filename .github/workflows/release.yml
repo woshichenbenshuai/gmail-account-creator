@@ -80,10 +80,10 @@ jobs:
         id: changelog
         shell: python
         run: |
+          import os
           import re
           with open("CHANGELOG.md") as f:
             content = f.read()
-          # Extract entries under the first version header matching our tag
           tag = "${{ github.ref_name }}"
           tag_ver = tag.lstrip("v")
           block = ""
