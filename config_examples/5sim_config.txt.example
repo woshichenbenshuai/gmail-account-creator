@@ -1,1 +1,13 @@
-your_5sim_api_key_here
+==============================================================================
+ EXAMPLE 5SIM API KEY FILE
+==============================================================================
+ This is a MOCK placeholder. Copy to ../config/5sim_config.txt and replace
+ with your actual 5sim API key.
+
+ How to get your API key:
+  1. Register at https://5sim.net/
+  2. Go to your account dashboard
+  3. Generate an API token
+  4. Paste it here (one line, no extra whitespace)
+==============================================================================
+your_actual_5sim_api_key_here

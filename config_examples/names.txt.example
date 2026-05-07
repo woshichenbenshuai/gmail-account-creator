@@ -1,6 +1,15 @@
+# ============================================================================
+# EXAMPLE NAMES FILE — one name per line, format: "First Last" or just "First"
+# ============================================================================
+# Copy to ../data/names.txt and customize.
+# These are sample names used to generate Gmail usernames.
+#
+# Usage tips:
+#   - Add as many names as you like
+#   - Name format determines how usernames are built
+#   - For example, "Ahmed Mohamed" may produce "ahmedmohamed8472@gmail.com"
+# ============================================================================
 Ahmed Mohamed
 Mohamed Ali
 Omar Ibrahim
 Sarah Ahmed
-John Smith
-Jane Doe
