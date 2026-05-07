@@ -1,0 +1,58 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.ruff_cache
+.mypy_cache
+
+# Build output
+build/
+dist/
+*.egg-info
+*.spec
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Config (secrets)
+config/password.txt
+config/5sim_config.txt
+config/user_agents.txt
+config/config.py
+
+# Data
+data/names.txt
+data/accounts.json
+
+# GitHub
+.github/
+
+# Dev
+tests/
+.devcontainer/
+config_examples/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Docs
+CONTRIBUTING.md
+CHANGELOG.md
+SECURITY.md
+README.md
+
+# Other
+.pre-commit-config.yaml
+.editorconfig
+renovate.json

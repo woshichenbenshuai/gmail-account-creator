@@ -35,6 +35,10 @@ class AppConfig:
     BIRTHDAY: str = ""
     GENDER: str = "1"
     PASSWORD: str = ""
+    SMS_PROVIDER: str = "skip"
+    FARM_API_BASE_URL: str = ""
+    FARM_API_KEY: str = ""
+    FARM_API_TIMEOUT: int = 120
     FIVESIM_API_KEY: str = ""
     FIVESIM_COUNTRY: str = "usa"
     FIVESIM_OPERATOR: str = "any"
@@ -61,6 +65,7 @@ class AppConfig:
 
         ns: dict[str, Any] = {}
         exec(config_py.read_text(encoding="utf-8"), ns)
+        self.SMS_PROVIDER = ns.get("SMS_PROVIDER", self.SMS_PROVIDER)
         self.BIRTHDAY = ns.get("YOUR_BIRTHDAY", "")
         self.GENDER = ns.get("YOUR_GENDER", "1")
         self.FIVESIM_COUNTRY = ns.get("FIVESIM_COUNTRY", "usa")
@@ -78,6 +83,10 @@ class AppConfig:
             self.FIVESIM_API_KEY = api_key_from_config
 
     def _load_from_env(self) -> None:
+        self.SMS_PROVIDER = os.getenv("GMAIL_SMS_PROVIDER", self.SMS_PROVIDER)
+        self.FARM_API_BASE_URL = os.getenv("GMAIL_FARM_API_BASE_URL", self.FARM_API_BASE_URL)
+        self.FARM_API_KEY = os.getenv("GMAIL_FARM_API_KEY", self.FARM_API_KEY)
+        self.FARM_API_TIMEOUT = int(os.getenv("GMAIL_FARM_API_TIMEOUT", str(self.FARM_API_TIMEOUT)))
         self.BIRTHDAY = os.getenv("GMAIL_BIRTHDAY", self.BIRTHDAY)
         self.GENDER = os.getenv("GMAIL_GENDER", self.GENDER)
         self.PASSWORD = os.getenv("GMAIL_PASSWORD", self.PASSWORD)

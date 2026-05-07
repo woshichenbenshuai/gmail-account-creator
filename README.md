@@ -22,6 +22,7 @@
 
 - **Anti-Detection**: stealth JS injection, human-like typing, random user agents, session warming
 - **Phone Verification Bypass**: skip button detection (EN/AR), "Try another way", 5sim API integration
+- **Pluggable SMS Providers**: plugin architecture — use built-in providers or write your own
 - **Smart Proxy**: automatic proxy rotation via FreeProxy
 - **Rich Console UI**: progress bars, statistics dashboard, color-coded output
 - **Auto-Save**: accounts saved to `data/accounts.json`
@@ -44,6 +45,12 @@ cp config_examples/config.example.py config/config.py
 
 # Run
 python auto_gmail_creator.py
+
+# Or with Makefile:
+make install   # pip install -e .
+make test      # run tests with coverage
+make lint      # ruff check
+make typecheck # mypy
 ```
 
 ---
@@ -76,6 +83,33 @@ cp config_examples/names.txt.example     data/names.txt
 cp config_examples/.env.example .env
 # edit .env with your values
 ```
+
+### SMS Provider Configuration
+
+Choose how to handle phone verification:
+
+| Provider | Config Value | Description |
+|----------|-------------|-------------|
+| Skip button | `skip` (default) | Automatically click "Skip" / "تخطي" buttons |
+| 5sim.net | `5sim` | Use 5sim API to receive SMS codes |
+| Phone Farm | `farm` | Generic self-hosted phone farm API |
+| Custom | `your_provider` | Implement `SMSProvider` and register via `register_provider()` |
+
+Set via `SMS_PROVIDER` in `config/config.py` or `GMAIL_SMS_PROVIDER` env var.
+
+### Phone Farm API Contract
+
+The `farm` provider expects a REST API with these endpoints:
+
+| Method | Endpoint | Request | Response |
+|--------|----------|---------|----------|
+| `POST` | `/api/numbers` | `{"service": "google"}` | `{"id": "uuid", "phone": "+628xxx"}` |
+| `GET` | `/api/numbers/{id}/code` | — | `{"status": "waiting\|received", "code": "123456"}` |
+| `DELETE` | `/api/numbers/{id}` | — | `204 No Content` |
+
+Configure via `FARM_API_BASE_URL`, `FARM_API_KEY`, `FARM_API_TIMEOUT` in config or env vars.
+
+For custom SMS providers, see [`docs/examples/custom_sms_provider.py`](docs/examples/custom_sms_provider.py).
 
 All configuration options are documented inline in the example files.
 
@@ -115,7 +149,7 @@ docker compose up
 ├── docker-compose.yml            # Orchestrated services
 ├── gmail_creator.spec            # PyInstaller build spec
 │
-├── src/gmail_creator/            # Main package (12 modules)
+├── src/gmail_creator/            # Main package (12 modules + sub-packages)
 │   ├── __init__.py               # Package metadata
 │   ├── __main__.py               # CLI entry point
 │   ├── account_creator.py        # Core account creation logic
@@ -124,7 +158,14 @@ docker compose up
 │   ├── config.py                 # Configuration loader (files + .env)
 │   ├── constants.py              # CSS/XPath selectors & constants
 │   ├── name_generator.py         # Name & username generation
-│   ├── phone_verifier.py         # Phone verification (5sim + skip)
+│   ├── phone/                    # Pluggable SMS provider system
+│   │   ├── __init__.py           # Provider registration & exports
+│   │   ├── base.py               # Abstract SMSProvider base class
+│   │   ├── registry.py           # Provider registry & discovery
+│   │   ├── skip.py               # Skip button strategy provider
+│   │   ├── fivesim.py            # 5sim.net API provider
+│   │   └── farm.py               # Generic phone farm API provider
+│   ├── phone_verifier.py         # Phone verification (delegates to phone/)
 │   ├── proxy_manager.py          # FreeProxy rotation
 │   ├── stats.py                  # Account CRUD & statistics
 │   └── ui.py                     # Rich console interface
@@ -138,8 +179,10 @@ docker compose up
 │   ├── test_name_generator.py
 │   ├── test_phone_verifier.py
 │   ├── test_proxy_manager.py
+│   ├── test_phone_registry.py
 │   └── test_stats.py
 │
+├── docs/examples/                # Example: custom_sms_provider.py
 ├── config_examples/              # Documented template configs
 ├── .github/                      # CI/CD & community health files
 │   ├── workflows/
@@ -201,6 +244,9 @@ GMAIL_HEADLESS=1 docker compose up
 # Full dev environment
 pip install -e ".[dev]"
 
+# Or using Makefile:
+make install-dev
+
 # Install pre-commit hooks
 pre-commit install
 
@@ -209,6 +255,9 @@ ruff check src/
 
 # Type check
 mypy src/
+
+# Run all quality checks
+make check
 ```
 
 ---

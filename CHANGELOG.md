@@ -8,16 +8,24 @@ All notable changes to this project will be documented in this file.
 
 #### Source Code
 - Complete Python source code with modular architecture (`src/gmail_creator/`)
-- 12 dedicated modules: config, browser, anti-detection, account-creator,
-  phone-verifier, name-generator, proxy-manager, stats, UI, constants,
-  entry point, and package metadata
+- 12 dedicated modules plus `phone/` sub-package: config, browser,
+  anti-detection, account-creator, phone-verifier, name-generator,
+  proxy-manager, stats, UI, constants, entry point, package metadata,
+  and pluggable SMS provider system
+- **SMS Provider Plugin Architecture** (`src/gmail_creator/phone/`):
+  - Abstract `SMSProvider` base class for building custom providers
+  - `ProviderRegistry` with `register()` / `get()` for runtime discovery
+  - Built-in providers: `SkipPhoneProvider` (skip button strategy),
+    `FiveSimProvider` (5sim.net API), `PhoneFarmProvider` (generic
+    self-hosted phone farm API with REST contract)
+  - Configurable via `SMS_PROVIDER` setting (env var, config.py, or default)
 - Type hints (`from __future__ import annotations`) across all modules
 - Configuration via environment variables (`.env` support)
 - Structured `AppConfig` class replacing `exec()`-based config loading
 - `pyproject.toml` with project metadata, dependencies, and all tool configs
 
 #### Testing & Quality
-- 20+ unit tests across 9 test files (pytest)
+- 91 unit tests across 13 test files (pytest)
 - Test coverage for config, stats, name generator, phone verifier,
   proxy manager, anti-detection, browser, and account creator modules
 - Mock-based integration tests for 5sim client, Selenium interactions
@@ -45,7 +53,11 @@ All notable changes to this project will be documented in this file.
 - `.devcontainer/devcontainer.json` for GitHub Codespaces / VS Code
 - `.editorconfig` for cross-editor consistency
 - `gmail_creator.spec` for reproducible PyInstaller builds
-- `Makefile` for common dev tasks
+- `Makefile` with `install`, `test`, `lint`, `typecheck`, `build`, `clean`,
+  `docker-build`, `docker-run` targets
+- `.dockerignore` for smaller Docker build context
+- Coverage threshold (60%) in pytest config + CI pipeline
+- `docs/examples/custom_sms_provider.py` with full test suite
 
 #### Documentation & Community
 - `CONTRIBUTING.md` with branching strategy, code quality checklist, PR flow

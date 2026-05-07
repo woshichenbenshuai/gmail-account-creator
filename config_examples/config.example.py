@@ -20,8 +20,29 @@ YOUR_GENDER = "1"
 # Leave empty to read from config/password.txt instead
 YOUR_PASSWORD = ""
 
-# 5SIM API (OPTIONAL)
-# -------------------
+# SMS PROVIDER
+# ------------
+# Which SMS verification method to use.
+# Options:
+#   "skip"  — Try to skip phone verification (default)
+#   "5sim"  — Use 5sim.net API (requires API key below)
+#   "farm"  — Self-hosted phone farm API
+#   others  — Custom provider registered via plugin system
+SMS_PROVIDER = "skip"
+
+# PHONE FARM (REQUIRED if SMS_PROVIDER="farm")
+# ---------------------------------------------
+# Generic API for self-hosted phone verification.
+# Expects a REST API implementing:
+#   POST /api/numbers          → {id, phone}
+#   GET  /api/numbers/{id}/code → {status, code}
+#   DELETE /api/numbers/{id}    → 204
+FARM_API_BASE_URL = "http://localhost:8080"
+FARM_API_KEY = ""
+FARM_API_TIMEOUT = 120
+
+# 5SIM API (REQUIRED if SMS_PROVIDER="5sim")
+# -------------------------------------------
 # Used for automatic SMS verification.
 # Leave empty to read from config/5sim_config.txt instead.
 FIVESIM_API_KEY = ""
