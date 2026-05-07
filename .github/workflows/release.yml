@@ -100,6 +100,18 @@ jobs:
           with open(os.environ["GITHUB_ENV"], "a") as env:
             env.write(f"RELEASE_BODY<<EOF\n{block.strip()}\nEOF")
 
+      - name: Determine prerelease
+        id: check_prerelease
+        shell: python
+        run: |
+          import os
+          tag = "${{ github.ref_name }}"
+          is_prerelease = str(
+            any(identifier in tag for identifier in ["rc", "beta", "alpha", "dev"])
+          ).lower()
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+            f.write(f"is_prerelease={is_prerelease}\n")
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -110,4 +122,4 @@ jobs:
             gmail-creator-pro-linux-x86_64/gmail-creator-pro
           fail_on_unmatched_files: false
           draft: false
-          prerelease: false
+          prerelease: ${{ steps.check_prerelease.outputs.is_prerelease }}
