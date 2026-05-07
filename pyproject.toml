@@ -42,6 +42,8 @@ dev = [
     "pytest-cov>=4.0",
     "ruff>=0.1.0",
     "mypy>=1.0",
+    "pre-commit>=4.0",
+    "bandit>=1.7.0",
 ]
 build = [
     "pyinstaller>=6.0",
@@ -76,6 +78,22 @@ select = [
     "UP",  # pyupgrade
 ]
 ignore = ["E501"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*", "*/config_examples/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "return None",
+]
+
+[tool.bandit]
+skips = ["B101", "B301", "B303", "B311", "B403", "B404", "B601", "B602", "B607"]
+exclude_dirs = ["tests", "config_examples", ".github"]
 
 [tool.mypy]
 python_version = "3.10"

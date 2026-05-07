@@ -1,0 +1,33 @@
+# ==============================================================================
+# Gmail Creator Pro — Docker Compose
+# ==============================================================================
+# Start:
+#   docker compose up
+#
+# Start with custom config:
+#   docker compose run --rm app
+#
+# Rebuild:
+#   docker compose build --no-cache
+# ==============================================================================
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gmail-creator-pro:latest
+    container_name: gmail-creator
+    stdin_open: true
+    tty: true
+    environment:
+      - GMAIL_HEADLESS=${GMAIL_HEADLESS:-0}
+      - GMAIL_PROXY_ENABLED=${GMAIL_PROXY_ENABLED:-0}
+      - GMAIL_BIRTHDAY=${GMAIL_BIRTHDAY:-}
+      - GMAIL_GENDER=${GMAIL_GENDER:-1}
+      - GMAIL_PASSWORD=${GMAIL_PASSWORD:-}
+    volumes:
+      - ./config:/app/config
+      - ./data:/app/data
+      - ./config_examples:/app/config_examples
+    restart: "no"

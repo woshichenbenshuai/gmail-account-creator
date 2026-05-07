@@ -1,0 +1,47 @@
+version: 2
+
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    assignees:
+      - "sandikodev"
+    groups:
+      test-deps:
+        patterns:
+          - "pytest*"
+          - "coverage*"
+      dev-deps:
+        patterns:
+          - "ruff"
+          - "mypy"
+          - "pre-commit"
+      runtime-deps:
+        patterns:
+          - "selenium"
+          - "rich"
+          - "requests"
+          - "unidecode"
+          - "beautifulsoup4"
+          - "webdriver-manager"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "ci"
+      include: "scope"

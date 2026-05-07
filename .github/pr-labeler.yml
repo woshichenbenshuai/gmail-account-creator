@@ -1,0 +1,43 @@
+# ==============================================================================
+# PR Labeler — auto-labels PRs based on changed paths
+# ==============================================================================
+# Reference: https://github.com/actions/labeler
+# ==============================================================================
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "README.md"
+          - "CONTRIBUTING.md"
+          - "CHANGELOG.md"
+          - "SECURITY.md"
+          - "docs/**"
+          - "*.md"
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+          - "Dockerfile"
+          - "docker-compose.yml"
+          - ".devcontainer/**"
+          - ".editorconfig"
+          - ".pre-commit-config.yaml"
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "requirements.txt"
+          - "pyproject.toml"
+
+test:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "tests/**"
+          - "pytest.ini"
+
+source:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/**"
+          - "auto_gmail_creator.py"

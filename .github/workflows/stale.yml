@@ -1,0 +1,66 @@
+# ==============================================================================
+# Stale Bot — automatically closes stale issues and PRs
+# ==============================================================================
+# Issues/PRs with no activity for 60 days are marked stale.
+# After 7 more days with no activity, they are closed.
+# ==============================================================================
+
+name: Stale
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+          # -- Issues -------------------------------------------------------
+          stale-issue-message: |
+            This issue has been automatically marked as stale because it has
+            had no activity in 60 days. If there is no further activity in 7
+            days, it will be closed automatically.
+
+            If this issue is still relevant, please leave a comment to keep
+            it open. Thank you for your contribution!
+          close-issue-message: |
+            This issue has been automatically closed due to inactivity.
+            Feel free to reopen if the issue persists or is still relevant.
+          stale-issue-label: "stale"
+          exempt-issue-labels:
+            - "security"
+            - "bug"
+            - "enhancement"
+          days-before-issue-stale: 60
+          days-before-issue-close: 7
+
+          # -- Pull Requests ------------------------------------------------
+          stale-pr-message: |
+            This pull request has been automatically marked as stale because
+            it has had no activity in 60 days. If there is no further activity
+            in 7 days, it will be closed automatically.
+
+            If you are still working on this, please leave a comment to keep
+            it open. Thank you for your contribution!
+          close-pr-message: |
+            This pull request has been automatically closed due to inactivity.
+            Feel free to reopen if you plan to continue working on it.
+          stale-pr-label: "stale"
+          exempt-pr-labels:
+            - "security"
+            - "dependencies"
+          days-before-pr-stale: 60
+          days-before-pr-close: 7
+
+          # -- General ------------------------------------------------------
+          operations-per-run: 100
+          remove-stale-when-updated: true

@@ -1,8 +1,22 @@
+<div align="center">
+
 # Gmail Creator Pro
 
-Automated Gmail account creation tool with anti-detection, phone verification bypass, and 5sim integration.
+[![CI](https://img.shields.io/github/actions/workflow/status/sandikodev/gmail-account-creator/ci.yml?branch=main&label=CI&logo=github)](https://github.com/sandikodev/gmail-account-creator/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/sandikodev/gmail-account-creator?logo=github&sort=semver)](https://github.com/sandikodev/gmail-account-creator/releases)
+[![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue?logo=python)](https://www.python.org)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/sandikodev/gmail-account-creator/codeql.yml?branch=main&label=CodeQL&logo=github)](https://github.com/sandikodev/gmail-account-creator/actions/workflows/codeql.yml)
+[![Ruff](https://img.shields.io/badge/code%20style-ruff-000000)](https://github.com/astral-sh/ruff)
+[![Last Commit](https://img.shields.io/github/last-commit/sandikodev/gmail-account-creator)](https://github.com/sandikodev/gmail-account-creator/commits/main)
 
-> **Note:** This is a refactored fork of [ShadowHackrs/gmail-account-creator](https://github.com/ShadowHackrs/gmail-account-creator). The original repo shipped only a compiled binary; this version provides readable, maintainable Python source code.
+**Automated Gmail account creation tool with anti-detection, phone verification bypass, and 5sim integration.**
+
+</div>
+
+> **Note:** This is a refactored fork of [ShadowHackrs/gmail-account-creator](https://github.com/ShadowHackrs/gmail-account-creator). The original repo shipped only a compiled binary; this version provides readable, maintainable Python source code under the MIT license.
+
+---
 
 ## Features
 
@@ -13,102 +27,236 @@ Automated Gmail account creation tool with anti-detection, phone verification by
 - **Auto-Save**: accounts saved to `data/accounts.json`
 - **Auto-Retry**: smart retry logic with multiple fallback strategies
 
-## Requirements
+---
 
-- Python 3.10+
-- Chrome browser installed
-- Stable internet connection
-
-## Installation
+## Quick Start
 
 ```bash
 git clone https://github.com/sandikodev/gmail-account-creator.git
 cd gmail-account-creator
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Copy & edit configuration
+cp config_examples/config.example.py config/config.py
+# ... edit config/config.py with your settings ...
+
+# Run
+python auto_gmail_creator.py
 ```
 
-For development with all tools:
+---
 
-```bash
-pip install -e ".[dev]"
-```
+## Requirements
+
+| Requirement | Notes |
+|-------------|-------|
+| Python ≥ 3.10 | 3.12 recommended |
+| Chrome (latest) | Auto-managed via webdriver-manager |
+| Internet connection | Required for Google & 5sim APIs |
+| RAM ≥ 2 GB | 4 GB+ recommended for headless mode |
+
+---
 
 ## Configuration
 
-### 1. Setup config files
+### Option A: Config files (recommended)
 
 ```bash
-# Copy example templates (edit as needed)
-cp config_examples/config.example.py config/config.py
-cp config_examples/password.txt.example config/password.txt
+cp config_examples/config.example.py     config/config.py
+cp config_examples/password.txt.example  config/password.txt
 cp config_examples/5sim_config.txt.example config/5sim_config.txt
-cp config_examples/names.txt.example data/names.txt
+cp config_examples/names.txt.example     data/names.txt
 ```
 
-### 2. Edit configuration
+### Option B: Environment variables
 
-Edit `config/config.py`:
-
-```python
-YOUR_BIRTHDAY = "22 4 2001"    # month day year
-YOUR_GENDER = "1"               # 1=Male, 2=Female, 3=Other
+```bash
+cp config_examples/.env.example .env
+# edit .env with your values
 ```
 
-Or use environment variables (see `config_examples/.env.example`).
+All configuration options are documented inline in the example files.
+
+---
 
 ## Usage
 
 ```bash
+# Terminal UI
 python auto_gmail_creator.py
-```
 
-Or as a module:
-
-```bash
+# Or as a Python module
 python -m src.gmail_creator
+
+# Or with Docker
+docker compose up
 ```
 
 ### Menu Options
-1. **Create Gmail Accounts** — start creating accounts
-2. **View Statistics** — see account creation stats
-3. **Settings** — configure proxy, user agents
-4. **View Saved Accounts** — view all created accounts
-5. **Exit**
+
+| # | Option | Description |
+|---|--------|-------------|
+| 1 | Create Gmail Accounts | Start creating accounts with progress tracking |
+| 2 | View Statistics | See total accounts, success rate, active count |
+| 3 | Settings | Configure proxy, user agents |
+| 4 | View Saved Accounts | Browse all created accounts |
+| 5 | Exit | Quit the application |
+
+---
 
 ## Project Structure
 
 ```
-├── auto_gmail_creator.py         # Entry point script
-├── pyproject.toml                # Project config & dependencies
-├── src/gmail_creator/            # Main package
+├── auto_gmail_creator.py         # Entry point
+├── pyproject.toml                # Project metadata & tooling config
+├── Dockerfile                    # Container image
+├── docker-compose.yml            # Orchestrated services
+├── gmail_creator.spec            # PyInstaller build spec
+│
+├── src/gmail_creator/            # Main package (12 modules)
 │   ├── __init__.py               # Package metadata
 │   ├── __main__.py               # CLI entry point
 │   ├── account_creator.py        # Core account creation logic
-│   ├── anti_detection.py         # Stealth techniques
-│   ├── browser.py                # WebDriver management
-│   ├── config.py                 # Configuration loader
-│   ├── constants.py              # Constants & selectors
-│   ├── name_generator.py         # Name/username generation
+│   ├── anti_detection.py         # Stealth JS injection & typing
+│   ├── browser.py                # WebDriver setup & session warming
+│   ├── config.py                 # Configuration loader (files + .env)
+│   ├── constants.py              # CSS/XPath selectors & constants
+│   ├── name_generator.py         # Name & username generation
 │   ├── phone_verifier.py         # Phone verification (5sim + skip)
-│   ├── proxy_manager.py          # Proxy rotation
-│   ├── stats.py                  # Account statistics
+│   ├── proxy_manager.py          # FreeProxy rotation
+│   ├── stats.py                  # Account CRUD & statistics
 │   └── ui.py                     # Rich console interface
-├── config_examples/              # Template config files
-├── tests/                        # Unit tests
-├── .github/workflows/ci.yml      # CI pipeline
-└── CONTRIBUTING.md               # Contribution guide
+│
+├── tests/                        # Test suite (pytest)
+│   ├── conftest.py
+│   ├── test_account_creator.py
+│   ├── test_anti_detection.py
+│   ├── test_browser.py
+│   ├── test_config.py
+│   ├── test_name_generator.py
+│   ├── test_phone_verifier.py
+│   ├── test_proxy_manager.py
+│   └── test_stats.py
+│
+├── config_examples/              # Documented template configs
+├── .github/                      # CI/CD & community health files
+│   ├── workflows/
+│   │   ├── ci.yml                # Lint + test on push/PR
+│   │   ├── release.yml           # Build + release on tag
+│   │   ├── codeql.yml            # Security scanning
+│   │   ├── stale.yml             # Inactive issue/pr management
+│   │   ├── pr-labeler.yml        # Semantic PR labeling
+│   │   └── release-drafter.yml   # Auto-release notes
+│   ├── dependabot.yml            # Dependency updates
+│   ├── release-drafter.yml       # Release note templates
+│   └── pr-labeler.yml            # Path-based label rules
+│
+├── .devcontainer/                # VS Code / Codespaces config
+├── .editorconfig                 # Cross-editor consistency
+├── .pre-commit-config.yaml       # Pre-commit hooks
+├── .gitignore
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── SECURITY.md
+└── LICENSE (MIT)
 ```
+
+---
 
 ## Testing
 
 ```bash
+# Run all tests
 pytest
+
+# With coverage report
+pytest --cov --cov-report=term-missing
+
+# Specific test file
+pytest tests/test_phone_verifier.py -v
 ```
+
+---
+
+## Docker
+
+```bash
+# Build
+docker compose build
+
+# Run interactively
+docker compose up
+
+# Run headless
+GMAIL_HEADLESS=1 docker compose up
+```
+
+---
+
+## Development Setup
+
+```bash
+# Full dev environment
+pip install -e ".[dev]"
+
+# Install pre-commit hooks
+pre-commit install
+
+# Run linter
+ruff check src/
+
+# Type check
+mypy src/
+```
+
+---
+
+## CI/CD Pipeline
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `ci.yml` | Push/PR to main | Lint + test across Python 3.10–3.12 |
+| `release.yml` | Push tag `v*.*.*` | Build binaries (Win/Linux) + create GitHub Release |
+| `codeql.yml` | Push/PR + weekly | Security vulnerability scanning |
+| `release-drafter.yml` | Push to main | Auto-generate release notes from PR labels |
+| `pr-labeler.yml` | PR opened/edited | Label PRs by changed files + enforce conventional title |
+| `stale.yml` | Weekly | Auto-close inactive issues/PRs after 60 days |
+
+### Creating a Release
+
+```bash
+# 1. Update CHANGELOG.md
+# 2. Commit and tag
+git tag v2.1.0
+git push origin v2.1.0
+# 3. Release workflow runs automatically
+```
+
+---
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for our vulnerability disclosure policy.
+All secrets (passwords, API keys) must be kept in untracked config files
+or environment variables — never commit them.
+
+---
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+All contributions are expected to pass linting and tests before review.
+
+---
 
 ## License
 
 MIT License — see [LICENSE](LICENSE).
+
+---
+
+<div align="center">
+  <sub>Built with Python, Selenium, and ❤️ for the cybersecurity community.</sub>
+</div>

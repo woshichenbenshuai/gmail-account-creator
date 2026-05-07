@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+  discussions: write
+
+jobs:
+  build-windows:
+    name: Build Windows (x86_64)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build executable
+        run: |
+          pyinstaller --clean --onefile --name "gmail-creator-pro" `
+            --add-data "config_examples;config_examples" `
+            --hidden-import src.gmail_creator `
+            auto_gmail_creator.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gmail-creator-pro-windows-x86_64
+          path: dist/gmail-creator-pro.exe
+
+  build-linux:
+    name: Build Linux (x86_64)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build executable
+        run: |
+          pyinstaller --clean --onefile --name "gmail-creator-pro" \
+            --add-data "config_examples:config_examples" \
+            --hidden-import src.gmail_creator \
+            auto_gmail_creator.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gmail-creator-pro-linux-x86_64
+          path: dist/gmail-creator-pro
+
+  create-release:
+    name: Create GitHub Release
+    needs: [build-windows, build-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Extract changelog for this version
+        id: changelog
+        shell: python
+        run: |
+          import re
+          with open("CHANGELOG.md") as f:
+            content = f.read()
+          # Extract entries under the first version header matching our tag
+          tag = "${{ github.ref_name }}"
+          tag_ver = tag.lstrip("v")
+          block = ""
+          in_block = False
+          for line in content.splitlines():
+            if re.match(r"^## \[", line):
+              header_ver = re.search(r"\[([^\]]+)\]", line)
+              if header_ver and header_ver.group(1) == tag_ver:
+                in_block = True
+              elif in_block:
+                break
+            elif in_block:
+              block += line + "\n"
+          with open(os.environ["GITHUB_ENV"], "a") as env:
+            env.write(f"RELEASE_BODY<<EOF\n{block.strip()}\nEOF")
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Gmail Creator Pro ${{ github.ref_name }}"
+          body: ${{ env.RELEASE_BODY }}
+          files: |
+            gmail-creator-pro-windows-x86_64/gmail-creator-pro.exe
+            gmail-creator-pro-linux-x86_64/gmail-creator-pro
+          fail_on_unmatched_files: false
+          draft: false
+          prerelease: false

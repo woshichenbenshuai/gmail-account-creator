@@ -1,0 +1,69 @@
+# ==============================================================================
+# Release Drafter — auto-generates release notes from PR labels
+# ==============================================================================
+# Reference: https://github.com/release-drafter/release-drafter
+# ==============================================================================
+
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+
+categories:
+  - title: "🚨 Security"
+    labels:
+      - "security"
+  - title: "🚀 Features"
+    labels:
+      - "enhancement"
+      - "feature"
+  - title: "🐛 Bug Fixes"
+    labels:
+      - "bug"
+      - "fix"
+  - title: "🧰 Maintenance"
+    labels:
+      - "refactor"
+      - "dependencies"
+      - "automated"
+      - "ci"
+  - title: "📚 Documentation"
+    labels:
+      - "documentation"
+      - "docs"
+
+change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
+
+change-title-escapes: '\<*_&'
+
+version-resolver:
+  major:
+    labels:
+      - "major"
+      - "security"
+  minor:
+    labels:
+      - "enhancement"
+      - "feature"
+  patch:
+    labels:
+      - "bug"
+      - "fix"
+      - "dependencies"
+      - "automated"
+  default: patch
+
+template: |
+  $CHANGES
+
+  ## Contributors
+
+  $CONTRIBUTORS
+
+  ## Installation
+
+  ```bash
+  pip install -r requirements.txt
+  python auto_gmail_creator.py
+  ```
+
+  See [the release page](https://github.com/sandikodev/gmail-account-creator/releases)
+  for pre-built binaries.

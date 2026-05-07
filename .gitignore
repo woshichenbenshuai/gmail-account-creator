@@ -58,6 +58,7 @@ data/*.json
 build/
 dist/
 *.spec
+!gmail_creator.spec
 
 # Logs
 *.log
