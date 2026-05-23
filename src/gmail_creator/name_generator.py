@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+import string
 from pathlib import Path
 
 from src.gmail_creator.config import CONFIG
@@ -20,7 +21,17 @@ def generate_username(first_name: str, last_name: str = "") -> str:
     base = unidecode.unidecode(first_name.lower().replace(" ", ""))
     if last_name:
         base += unidecode.unidecode(last_name.lower().replace(" ", ""))
-    suffix = random.randint(100, 9999)
+    base = "".join(ch for ch in base if ch.isalnum())
+    year_hint = random.randint(1978, 2005)
+    numeric = random.randint(10000, 999999)
+    letters = "".join(random.choice(string.ascii_lowercase) for _ in range(2))
+    suffix = random.choice(
+        [
+            f"{year_hint}{numeric}",
+            f"{numeric}{letters}",
+            f"{letters}{numeric}",
+        ]
+    )
     return f"{base}{suffix}"
 
 

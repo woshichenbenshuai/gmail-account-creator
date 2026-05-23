@@ -14,11 +14,24 @@ from src.gmail_creator.constants import SESSION_WARMING_DELAY_RANGE, SESSION_WAR
 from src.gmail_creator.name_generator import pick_random_user_agent
 
 
+def configure_proxy(options: Options) -> None:
+    if not CONFIG.PROXY_ENABLED:
+        return
+
+    proxy_server = CONFIG.PROXY_SERVER.strip()
+    if not proxy_server:
+        return
+
+    options.add_argument(f"--proxy-server={proxy_server}")
+
+
 def create_driver() -> WebDriver:
     options = Options()
     user_agent = pick_random_user_agent()
     if user_agent:
         options.add_argument(f"--user-agent={user_agent}")
+
+    configure_proxy(options)
 
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")

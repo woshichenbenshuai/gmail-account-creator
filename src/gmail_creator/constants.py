@@ -11,7 +11,10 @@ DEFAULT_5SIM_CONFIG_FILE = CONFIG_DIR / "5sim_config.txt"
 DEFAULT_USER_AGENTS_FILE = CONFIG_DIR / "user_agents.txt"
 ACCOUNTS_FILE = DATA_DIR / "accounts.json"
 
-GMAIL_SIGNUP_URL = "https://accounts.google.com/SignUp"
+GMAIL_SIGNUP_URL = (
+    "https://accounts.google.com/signup/v2/createaccount"
+    "?service=mail&flowName=GlifWebSignIn&flowEntry=SignUp"
+)
 
 SESSION_WARMING_URLS = [
     "https://www.google.com",
@@ -35,7 +38,7 @@ class Selectors:
     LAST_NAME = "input[name='lastName']"
     USERNAME = "input[name='Username']"
     PASSWORD = "input[name='Passwd']"
-    CONFIRM_PASSWORD = "input[name='ConfirmPasswd']"
+    CONFIRM_PASSWORD = "input[name='PasswdAgain']"
     MONTH = "select#month"
     DAY = "input#day"
     YEAR = "input#year"

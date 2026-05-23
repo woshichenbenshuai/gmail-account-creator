@@ -104,3 +104,4 @@ screenshot*.png
 # Auto-generated
 data/accounts.json
 data/accounts/
+data/debug/

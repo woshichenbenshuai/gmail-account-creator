@@ -3,12 +3,16 @@ from __future__ import annotations
 import sys
 
 from src.gmail_creator.account_creator import create_single_account
+from src.gmail_creator.config import CONFIG
+from src.gmail_creator.ip_check import check_current_ip
 from src.gmail_creator.ui import (
     create_progress,
     input_number,
     print_accounts,
     print_banner,
+    print_error,
     print_info,
+    print_ip_check,
     print_menu,
     print_stats,
 )
@@ -35,6 +39,13 @@ def create_accounts_flow() -> None:
 
 def main() -> None:
     print_banner()
+    if CONFIG.IP_CHECK_ENABLED:
+        result = check_current_ip()
+        print_ip_check(result)
+        if CONFIG.IP_CHECK_BLOCK_ON_MISMATCH and not result.ok:
+            print_error("Startup IP check failed. Fix proxy/IP settings before creating accounts.")
+            sys.exit(1)
+
     while True:
         print_menu()
         choice = input_number("Select option: ")

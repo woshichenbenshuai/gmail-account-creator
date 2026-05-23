@@ -93,6 +93,30 @@ def print_info(msg: str) -> None:
     console.print(f"[cyan]{msg}[/cyan]")
 
 
+def print_ip_check(result: Any) -> None:
+    if result.error:
+        console.print(f"[yellow]IP check failed ({result.source}):[/yellow] {result.error}")
+        console.print()
+        return
+
+    table = Table(title="Startup IP Check", border_style="magenta")
+    table.add_column("Field", style="bold cyan")
+    table.add_column("Value")
+    table.add_row("Source", result.source)
+    table.add_row("IP", result.ip or "N/A")
+    table.add_row("Country", result.country or "N/A")
+    table.add_row("Region", result.region or "N/A")
+    table.add_row("City", result.city or "N/A")
+    table.add_row("Timezone", result.timezone or "N/A")
+    table.add_row("Network", result.org or "N/A")
+    table.add_row("Suitable", "Yes" if result.ok else "Review required")
+    console.print(table)
+
+    for warning in result.warnings:
+        print_warning(warning)
+    console.print()
+
+
 def input_number(prompt: str = "Enter number: ") -> int:
     try:
         return int(console.input(f"[bold]{prompt}[/bold]"))
